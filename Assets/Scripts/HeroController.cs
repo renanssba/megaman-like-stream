@@ -9,6 +9,22 @@ public class HeroController : MonoBehaviour {
   public float xSpeed = 2f;
   public float jumpSpeed = 10f;
 
+  public float timeToMediumShot = 1f;
+  public float timeToChargedShot = 2f;
+
+  public GameObject basicShot;
+  public GameObject mediumShot;
+  public GameObject chargedShot;
+
+  public float chargedTime = 0f;
+
+
+  public static HeroController instance;
+
+  private void Awake() {
+    instance = this;
+  }
+
   void Update() {
     if(Input.GetKey(KeyCode.RightArrow)){
       FaceRight();
@@ -24,10 +40,26 @@ public class HeroController : MonoBehaviour {
       Jump();
     }
 
+    if (Input.GetKeyDown(KeyCode.D)) {
+      InitialShoot();
+    }
+
+    if(Input.GetKeyUp(KeyCode.D)) {
+      ChargedShoot();
+    }
+
+    if (Input.GetKey(KeyCode.D)){
+      chargedTime += Time.deltaTime;
+    }else{
+      chargedTime = 0f;
+    }
+
+
+
     //if(body.velocity.y > 0f){
 
     //}
-	}
+  }
 
   void Jump(){
     body.velocity = new Vector2(body.velocity.x, jumpSpeed);
@@ -35,6 +67,24 @@ public class HeroController : MonoBehaviour {
 
   void LeavePlatform() {
     transform.SetParent(null);
+  }
+
+  void InitialShoot(){
+    GameObject newShot;
+    newShot = Instantiate(basicShot, transform);
+    newShot.transform.SetParent(null);
+  }
+
+  void ChargedShoot() {
+    GameObject newShot;
+
+    if (chargedTime >= timeToChargedShot) {
+      newShot = Instantiate(chargedShot, transform);
+      newShot.transform.SetParent(null);
+    } else if (chargedTime >= timeToMediumShot) {
+      newShot = Instantiate(mediumShot, transform);
+      newShot.transform.SetParent(null);
+    }
   }
 
 
