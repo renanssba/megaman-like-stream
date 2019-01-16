@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 public class HeroController : MonoBehaviour {
@@ -18,11 +19,15 @@ public class HeroController : MonoBehaviour {
 
   public float chargedTime = 0f;
 
+  public int maxHp;
+  public int hp;
+
 
   public static HeroController instance;
 
   private void Awake() {
     instance = this;
+    hp = maxHp;
   }
 
   void Update() {
@@ -105,11 +110,32 @@ public class HeroController : MonoBehaviour {
   }
 
 
+
+  void TakeDamage(int dmg) {
+    hp -= dmg;
+    UiController.instance.UpdateUI();
+    CheckDeath();
+  }
+
+  void CheckDeath() {
+    if (hp <= 0) {
+      Die();
+    }
+  }
+
+  void Die() {
+    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+  }
+
+
   public void OnCollisionEnter2D(Collision2D collision) {
     Debug.Log("Colidiu");
+    RayBit enemyHit = collision.gameObject.GetComponent<RayBit>();
 
     if (collision.gameObject.tag == "Platform") {
       transform.SetParent(collision.transform);
+    } else if(enemyHit != null) {
+      TakeDamage(enemyHit.tackleDamage);
     }
   }
 

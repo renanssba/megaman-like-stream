@@ -114,6 +114,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   body: {fileID: 50841438200997908}
   xSpeed: 10
+  damage: 1
+  hitParticle: {fileID: 1118682951530214, guid: 1a2bd376d1323bc4f8b4dc49d5febebb,
+    type: 2}
 --- !u!212 &212129303869238264
 SpriteRenderer:
   m_ObjectHideFlags: 1
