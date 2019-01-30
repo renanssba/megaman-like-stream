@@ -22,6 +22,8 @@ public class HeroController : MonoBehaviour {
   public int maxHp;
   public int hp;
 
+  public ParticleSystem[] chargingParticleSystems;
+
 
   public static HeroController instance;
 
@@ -55,7 +57,8 @@ public class HeroController : MonoBehaviour {
 
     if (Input.GetKey(KeyCode.D)){
       chargedTime += Time.deltaTime;
-    }else{
+      UpdateParticles();
+    } else{
       chargedTime = 0f;
     }
 
@@ -70,6 +73,32 @@ public class HeroController : MonoBehaviour {
     body.velocity = new Vector2(body.velocity.x, jumpSpeed);
   }
 
+  void UpdateParticles(){
+    if (chargedTime > timeToChargedShot) {
+      DeactivateParticles();
+      //chargingParticleSystems[2].gameObject.SetActive(true);
+      chargingParticleSystems[2].Play();
+    }
+
+    else if (chargedTime > timeToMediumShot) {
+      DeactivateParticles();
+      //chargingParticleSystems[1].gameObject.SetActive(true);
+      chargingParticleSystems[1].Play();
+    }
+
+    else if (chargedTime > 0f){
+      DeactivateParticles();
+      //chargingParticleSystems[0].gameObject.SetActive(true);
+      chargingParticleSystems[0].Play();
+    }
+  }
+
+  void DeactivateParticles(){
+    for (int i = 0; i < 3; i++) {
+      chargingParticleSystems[i].Stop();
+    }
+  }
+
   void LeavePlatform() {
     transform.SetParent(null);
   }
@@ -82,6 +111,8 @@ public class HeroController : MonoBehaviour {
 
   void ChargedShoot() {
     GameObject newShot;
+
+    DeactivateParticles();
 
     if (chargedTime >= timeToChargedShot) {
       newShot = Instantiate(chargedShot, transform);
